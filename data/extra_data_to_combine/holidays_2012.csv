@@ -1,0 +1,50 @@
+Date,Day,Holiday_Name,Region/Category,Context/Note
+2012-01-01,Sunday,New Year's Day,NYC/Federal,Observed Monday Jan 2
+2012-01-16,Monday,Martin Luther King Jr. Day,NYC/Federal,3rd Monday in Jan
+2012-02-04,Saturday,Mawlid (Prophet's Birthday) Eve,Muslim,Observance starts at sundown
+2012-02-05,Sunday,Mawlid (Prophet's Birthday),Muslim,Main observance day
+2012-02-07,Tuesday,Tu BiShvat Eve,Jewish,New Year for Trees (at sundown)
+2012-02-08,Wednesday,Tu BiShvat,Jewish,Main observance day
+2012-02-20,Monday,Presidents' Day,NYC/Federal,3rd Monday in Feb; Schools closed
+2012-02-20,Monday,Midwinter Recess Begins,NYC (Boroughs),School closure (Feb 20–24)
+2012-03-07,Wednesday,Purim Eve (Erev Purim),Jewish,Starts at sundown
+2012-03-08,Thursday,Purim,Jewish,Main observance day
+2012-04-06,Friday,Good Friday,Christian/NYC,Schools closed
+2012-04-06,Friday,Passover (Pesach) Eve,Jewish,First Seder at sundown; Schools closed
+2012-04-06,Friday,Spring Recess Begins,NYC (Boroughs),School closure (Apr 6–13)
+2012-04-07,Saturday,Passover (Pesach) Day 1,Jewish,No work permitted
+2012-05-26,Saturday,Shavuot Eve,Jewish,Starts at sundown
+2012-05-27,Sunday,Shavuot Day 1,Jewish,Festival of Weeks
+2012-05-28,Monday,Memorial Day,NYC/Federal,Last Monday in May; Schools closed
+2012-06-07,Thursday,Chancellor's Conference Day,NYC (Boroughs),Staff development; no students
+2012-07-04,Wednesday,Independence Day,NYC/Federal,Standard
+2012-07-19,Thursday,Ramadan Starts (Eve),Muslim,Fasting begins at sundown
+2012-07-20,Friday,Ramadan First Day,Muslim,First full day of fasting
+2012-08-18,Saturday,Eid al-Fitr Eve,Muslim,End of Ramadan fasting (at sundown)
+2012-08-19,Sunday,Eid al-Fitr,Muslim,Main celebration day
+2012-09-03,Monday,Labor Day,NYC/Federal,1st Monday in Sep; Schools closed
+2012-09-06,Thursday,First Day of School,NYC (Boroughs),2012-2013 school year starts
+2012-09-16,Sunday,Rosh Hashanah Eve (Erev),Jewish,New Year 5773 starts at sundown
+2012-09-17,Monday,Rosh Hashanah Day 1,Jewish,No work permitted; Schools closed
+2012-09-18,Tuesday,Rosh Hashanah Day 2,Jewish,No work permitted; Schools closed
+2012-09-25,Tuesday,Yom Kippur Eve (Kol Nidre),Jewish,Fast begins at sundown; Schools closed
+2012-09-26,Wednesday,Yom Kippur,Jewish,Day of Atonement; Schools closed
+2012-09-30,Sunday,Sukkot Eve,Jewish,Feast of Tabernacles starts at sundown
+2012-10-01,Monday,Sukkot Day 1,Jewish,No work permitted
+2012-10-08,Monday,Columbus Day,NYC/Federal,2nd Monday in Oct; Schools closed
+2012-10-25,Thursday,Day of Arafah,Muslim,Hajj climax
+2012-10-26,Friday,Eid al-Adha,Muslim,Feast of Sacrifice
+2012-11-06,Tuesday,Election Day,NYC/State,Staff development; no students
+2012-11-11,Sunday,Veterans Day,NYC/Federal,Observed Monday Nov 12; Schools closed
+2012-11-14,Wednesday,Islamic New Year Eve,Muslim,Year 1434 starts at sundown
+2012-11-15,Thursday,Islamic New Year,Muslim,Al-Hijra
+2012-11-21,Wednesday,Thanksgiving Eve,NYC/Federal,Common travel day
+2012-11-22,Thursday,Thanksgiving Day,NYC/Federal,4th Thursday in Nov; Schools closed
+2012-11-23,Friday,Day After Thanksgiving,NYC/State,Schools closed
+2012-11-23,Friday,Ashura Eve,Muslim,Day of fasting begins at sundown
+2012-11-24,Saturday,Ashura,Muslim,10th of Muharram
+2012-12-08,Saturday,Hanukkah Eve,Jewish,First candle lit at sundown
+2012-12-09,Sunday,Hanukkah Day 1,Jewish,Festival of Lights
+2012-12-24,Monday,Christmas Eve,NYC/Global,Winter Recess begins
+2012-12-25,Tuesday,Christmas Day,NYC/Federal,Standard
+2012-12-31,Monday,New Year's Eve,NYC/Global,Standard secular

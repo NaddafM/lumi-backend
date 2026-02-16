@@ -1,0 +1,28 @@
+{
+  "name": "lumi-backend-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local demo backend: WebSocket streaming to OpenAI, logs to Firestore.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/src/index.js",
+    "dev": "tsc -w -p tsconfig.json",
+    "start:dev": "node dist/index.js",
+    "smoke": "ts-node test/smokeClient.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "firebase-admin": "^12.5.0",
+    "openai": "^4.0.0",
+    "ws": "^8.17.1",
+    "zod": "^3.23.8",
+    "csv-parse": "^5.5.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/ws": "^8.5.12",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
