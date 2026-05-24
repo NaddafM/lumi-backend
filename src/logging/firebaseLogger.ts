@@ -1,32 +1,8 @@
-import admin from "firebase-admin";
-import fs from "node:fs";
-import path from "node:path";
+import { Datastore } from "@google-cloud/datastore";
 import { Env } from "../config/env";
 import { JsonObject } from "../core/types";
 
-let initialized = false;
-
-function initFirebase(env: Env): void {
-  if (initialized) return;
-  if (!env.FIREBASE_SERVICE_ACCOUNT_PATH) {
-  throw new Error("FIREBASE_SERVICE_ACCOUNT_PATH is not set");
-  }
-
-  const servicePath = env.FIREBASE_SERVICE_ACCOUNT_PATH;
-  const absolutePath = path.isAbsolute(servicePath) ? servicePath : path.resolve(process.cwd(), servicePath);
-
-  if (!fs.existsSync(absolutePath)) {
-    throw new Error(`Firebase service account JSON not found at: ${absolutePath}`);
-  }
-
-  const json = JSON.parse(fs.readFileSync(absolutePath, "utf8"));
-
-  admin.initializeApp({
-    credential: admin.credential.cert(json)
-  });
-
-  initialized = true;
-}
+const datastore = new Datastore();
 
 export type LogRecord = {
   requestId: string;
@@ -43,15 +19,25 @@ export type LogRecord = {
   finalPrompt?: string;
 };
 
-export async function logToFirestore(env: Env, record: LogRecord): Promise<void> {
-  initFirebase(env);
-  const db = admin.firestore();
-  const collection = env.FIRESTORE_COLLECTION;
+export async function logToDatastore(env: Env, record: LogRecord): Promise<void> {
+  const kind = env.FIRESTORE_COLLECTION || "request_logs";
+  const key = datastore.key([kind, record.requestId]);
 
-  await db.collection(collection).doc(record.requestId).set({
-    ...record,
-    createdAt: admin.firestore.Timestamp.fromMillis(record.createdAt),
-    startedAt: admin.firestore.Timestamp.fromMillis(record.startedAt),
-    finishedAt: admin.firestore.Timestamp.fromMillis(record.finishedAt)
+  await datastore.save({
+    key,
+    data: [
+      { name: "requestId", value: record.requestId },
+      { name: "question", value: record.question, excludeFromIndexes: true },
+      { name: "answer", value: record.answer, excludeFromIndexes: true },
+      { name: "createdAt", value: new Date(record.createdAt) },
+      { name: "startedAt", value: new Date(record.startedAt) },
+      { name: "finishedAt", value: new Date(record.finishedAt) },
+      { name: "latencyMs", value: record.latencyMs },
+      { name: "model", value: record.model },
+      { name: "promptVersion", value: record.promptVersion },
+      { name: "context", value: record.context ?? null, excludeFromIndexes: true },
+      { name: "error", value: record.error ?? null, excludeFromIndexes: true },
+      { name: "finalPrompt", value: record.finalPrompt ?? null, excludeFromIndexes: true }
+    ]
   });
 }
