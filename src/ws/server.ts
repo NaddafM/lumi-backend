@@ -5,11 +5,10 @@ import { EnvelopeSchema, QuestionPayloadSchema, CancelPayloadSchema } from "./pr
 import { formatNYCDateTime, nowMs } from "../utils/time";
 import { buildPrompt } from "../core/promptBuilder";
 import { streamOpenAIResponse } from "../llm/openaiClient";
-import { logToFirestore } from "../logging/firebaseLogger";
+import { logToDatastore } from "../logging/firebaseLogger";
 import { loadLightingCsv, buildLightingIndex, pickRandomNtaName } from "../core/lightingData";
 import { safeParseJsonArray } from "../core/jsonGuard";
 import { enrichSignals } from "../core/contextEnricher";
-
 
 type InFlight = {
   requestId: string;
@@ -22,7 +21,6 @@ function safeSend(ws: WebSocket, payload: unknown): void {
   if (ws.readyState !== WebSocket.OPEN) return;
   ws.send(JSON.stringify(payload));
 }
-
 
 export async function startWebSocketServer(env: Env): Promise<void> {
   const server = http.createServer((req, res) => {
@@ -82,10 +80,16 @@ export async function startWebSocketServer(env: Env): Promise<void> {
         }
         if (inFlight && inFlight.requestId === cancelRes.data.requestId) {
           inFlight.abortController.abort();
-          safeSend(ws, { event: "ack", data: { requestId: cancelRes.data.requestId, serverTimestamp: nowMs() } });
+          safeSend(ws, {
+            event: "ack",
+            data: { requestId: cancelRes.data.requestId, serverTimestamp: nowMs() }
+          });
           return;
         }
-        safeSend(ws, { event: "error", data: { requestId: cancelRes.data.requestId, message: "Nothing to cancel" } });
+        safeSend(ws, {
+          event: "error",
+          data: { requestId: cancelRes.data.requestId, message: "Nothing to cancel" }
+        });
         return;
       }
 
@@ -103,7 +107,10 @@ export async function startWebSocketServer(env: Env): Promise<void> {
       const { requestId, userText, context } = qRes.data;
 
       if (inFlight) {
-        safeSend(ws, { event: "error", data: { requestId, message: "Busy, one request is already running", code: "busy" } });
+        safeSend(ws, {
+          event: "error",
+          data: { requestId, message: "Busy, one request is already running", code: "busy" }
+        });
         return;
       }
 
@@ -112,7 +119,6 @@ export async function startWebSocketServer(env: Env): Promise<void> {
 
       const ctx = context ?? {};
 
-      // Client chooses neighborhood if provided; fallback to random
       const ntaName =
         typeof ctx.ntaName === "string" && ctx.ntaName.trim().length > 0
           ? ctx.ntaName.trim()
@@ -139,23 +145,19 @@ export async function startWebSocketServer(env: Env): Promise<void> {
         ctx: {
           ntaName,
           lighting,
-
           ageRange: ctx.ageRange,
           userGender: ctx.gender ?? null,
           visitWith: ctx.visitWith,
           cautiousness: ctx.cautiousness,
-
           requestedPoiCount: ctx.requestedPoiCount,
           userLat: ctx.userLat,
           userLng: ctx.userLng,
-
           crimeCount1km: enriched.crimeCount1km,
           weatherSummary: enriched.weatherSummary,
           isHolidayOrSpecialDay: enriched.isHolidayOrSpecialDay,
           holidayName: enriched.holidayName
         }
       });
-
 
       const abortController = new AbortController();
       const timeout = setTimeout(() => abortController.abort(), env.REQUEST_TIMEOUT_MS);
@@ -200,9 +202,13 @@ export async function startWebSocketServer(env: Env): Promise<void> {
       let pois: unknown[] | null = null;
       if (!errorObj) {
         pois = safeParseJsonArray(finalText);
+
         if (!pois) {
           errorObj = { message: "Model did not return valid JSON array", code: "invalid_json" };
-          safeSend(ws, { event: "error", data: { requestId, message: errorObj.message, code: errorObj.code } });
+          safeSend(ws, {
+            event: "error",
+            data: { requestId, message: errorObj.message, code: errorObj.code }
+          });
         }
       }
 
@@ -211,8 +217,7 @@ export async function startWebSocketServer(env: Env): Promise<void> {
       }
 
       try {
-        if (env.FIREBASE_SERVICE_ACCOUNT_PATH) {
-        await logToFirestore(env, {
+        await logToDatastore(env, {
           requestId,
           question: userText,
           answer: pois ? JSON.stringify(pois) : finalText,
@@ -230,13 +235,17 @@ export async function startWebSocketServer(env: Env): Promise<void> {
           error: errorObj,
           finalPrompt: built.finalPromptForLogging
         });
-      }else {
-    console.log("Firebase logging skipped, FIREBASE_SERVICE_ACCOUNT_PATH is not set");
-  }
       } catch (err: any) {
         const detail = err?.message ?? String(err);
         console.error("Firestore logging failed:", detail);
-        safeSend(ws, { event: "error", data: { requestId, message: `Firestore logging failed: ${detail}`, code: "firestore_error" } });
+        safeSend(ws, {
+          event: "error",
+          data: {
+            requestId,
+            message: `Firestore logging failed: ${detail}`,
+            code: "firestore_error"
+          }
+        });
       } finally {
         inFlight = null;
       }
@@ -263,6 +272,6 @@ export async function startWebSocketServer(env: Env): Promise<void> {
   }, env.WS_HEARTBEAT_MS);
 
   server.listen(env.PORT, "0.0.0.0", () => {
-  console.log(`Server listening on 0.0.0.0:${env.PORT}`);
-});
+    console.log(`Server listening on 0.0.0.0:${env.PORT}`);
+  });
 }
